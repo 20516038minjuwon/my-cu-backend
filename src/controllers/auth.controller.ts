@@ -19,8 +19,7 @@ export class AuthController {
 
     async login(req: Request, res: Response, next: NextFunction) {
         try {
-            const { username, password } = req.body;
-            const result = await authService.login({ username, password });
+            const result = await authService.login(req.body);
 
             res.status(200).json({
                 message: '로그인 성공',
