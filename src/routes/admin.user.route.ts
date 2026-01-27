@@ -15,15 +15,15 @@ const adminUserController = new AdminUserController();
 
 router.use(authenticateJwt, isAdmin);
 
-router.get("/users", validateQuery(PaginationQuerySchema), adminUserController.getUsers);
-router.get("/users/:id", validateParams(UserIdParamSchema), adminUserController.getUser);
-router.post("/users", validateBody(CreateUserSchema), adminUserController.createUser);
+router.get("/", validateQuery(PaginationQuerySchema), adminUserController.getUsers);
+router.get("/:id", validateParams(UserIdParamSchema), adminUserController.getUser);
+router.post("/", validateBody(CreateUserSchema), adminUserController.createUser);
 router.put(
-    "/users/:id",
+    "/:id",
     validateParams(UserIdParamSchema),
     validateBody(UpdateUserSchema),
     adminUserController.updateUser,
 );
-router.delete("/users/:id", validateParams(UserIdParamSchema), adminUserController.deleteUser);
+router.delete("/:id", validateParams(UserIdParamSchema), adminUserController.deleteUser);
 
 export default router;
