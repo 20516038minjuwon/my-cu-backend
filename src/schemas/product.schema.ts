@@ -27,6 +27,7 @@ export const ProductResponseSchema = z.object({
     name: z.string().openapi({ example: "오버핏 맨투맨" }),
     description: z.string().openapi({ example: "편안한 면 소재입니다." }),
     price: z.number().openapi({ example: 35000 }),
+    image: z.string().openapi({ example: "https://storage.googleapis.com/..." }),
     isNew: z.boolean().openapi({ example: true }),
     isBest: z.boolean().openapi({ example: false }),
     onePlus: z.boolean().openapi({ example: false }),

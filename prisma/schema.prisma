@@ -59,6 +59,7 @@ model Product {
   name        String
   description String   @db.Text
   price       Int
+  image       String
 
   isNew   Boolean @default(false)
   isBest  Boolean @default(false)

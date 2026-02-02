@@ -17,6 +17,7 @@ export class AdminProductService {
                 name: data.name,
                 description: data.description,
                 price: data.price,
+                image: data.image,
                 categoryId: data.categoryId,
                 isNew: data.isNew ?? false,
                 isBest: data.isBest ?? false,

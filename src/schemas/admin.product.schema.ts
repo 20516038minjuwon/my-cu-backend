@@ -14,6 +14,7 @@ export const CreateProductSchema = z
             .min(1, "상품 설명을 입력해주세요.")
             .openapi({ example: "가볍고 따뜻한 자켓입니다." }),
         price: z.number().min(0, "가격은 0원 이상이어야 합니다.").openapi({ example: 59000 }),
+        image: z.url("올바른 이미지 URL이 필요합니다."),
         categoryId: z.number().int().openapi({ example: 1, description: "카테고리 ID" }),
 
         isNew: z.boolean().optional().openapi({ example: true }),
