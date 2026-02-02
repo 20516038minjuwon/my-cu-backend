@@ -4,7 +4,7 @@ import { registry } from "../config/openApi";
 
 extendZodWithOpenApi(z);
 
-const TAG = "Admin / Categories";
+const TAG = "Admin/Categories";
 
 export const CreateCategorySchema = z
     .object({

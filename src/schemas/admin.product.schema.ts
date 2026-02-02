@@ -5,7 +5,7 @@ import { ProductResponseSchema } from "./product.schema"; // 기존 응답 스�
 
 extendZodWithOpenApi(z);
 
-const TAG = "Admin / Products";
+const TAG = "Admin/Products";
 export const CreateProductSchema = z
     .object({
         name: z.string().min(1, "상품명을 입력해주세요.").openapi({ example: "신상 자켓" }),

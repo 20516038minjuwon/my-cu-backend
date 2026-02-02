@@ -4,6 +4,7 @@ import { registry } from "../config/openApi";
 import { Role } from "@prisma/client";
 
 extendZodWithOpenApi(z);
+const TAG = "Admin/Users";
 
 export const AdminUserResponseSchema = z
     .object({
@@ -61,8 +62,6 @@ export const UpdateUserSchema = z
         role: z.enum(Role).optional(),
     })
     .openapi("AdminUpdateUserForm");
-
-const TAG = "Admin Users";
 
 registry.registerPath({
     method: "get",
