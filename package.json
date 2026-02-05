@@ -18,6 +18,7 @@
         "@asteasolutions/zod-to-openapi": "^8.4.0",
         "@prisma/client": "5.22.0",
         "@scalar/express-api-reference": "^0.8.37",
+        "axios": "^1.13.4",
         "bcryptjs": "^3.0.3",
         "cors": "^2.8.5",
         "dotenv": "^17.2.3",

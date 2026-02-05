@@ -16,12 +16,30 @@ enum Role {
 enum OrderStatus {
   PENDING
   PAID
-  PREPARING
   SHIPPED
   DELIVERED
+  CANCELED
+  RETURN_REQUESTED
+  RETURN_COMPLETED
+}
+
+enum PaymentStatus {
+  PAID
   CANCELLED
-  REFUNDED
-  RETURNED
+  FAILED
+}
+
+enum InquiryType {
+  DELIVERY // 배송
+  PRODUCT // 상품
+  EXCHANGE_RETURN // 교환/반품
+  MEMBER // 회원관련
+  OTHER // 기타
+}
+
+enum InquiryStatus {
+  PENDING
+  ANSWERED
 }
 
 model User {
@@ -39,6 +57,7 @@ model User {
   orders    Order[]
   reviews   Review[]
   inquiries Inquiry[]
+  cart      Cart?
 }
 
 model Category {
@@ -68,8 +87,31 @@ model Product {
 
   categoryId Int
   category   Category    @relation(fields: [categoryId], references: [id])
-  reviews    Review[]
+  cartItems  CartItem[]
   orderItems OrderItem[]
+  reviews    Review[]
+}
+
+model Cart {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId Int        @unique
+  user   User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items  CartItem[]
+}
+
+model CartItem {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  quantity  Int      @default(1)
+
+  cartId    Int
+  cart      Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
 }
 
 model Order {
@@ -79,9 +121,21 @@ model Order {
   status     OrderStatus @default(PENDING)
   totalPrice Int
 
-  userId Int
-  user   User        @relation(fields: [userId], references: [id])
-  items  OrderItem[]
+  recipientName   String
+  recipientPhone  String
+  zipCode         String
+  address1        String
+  address2        String
+  gatePassword    String?
+  deliveryRequest String?
+
+  trackingNumber String?
+  carrier        String?
+
+  userId  Int
+  user    User        @relation(fields: [userId], references: [id])
+  items   OrderItem[]
+  payment Payment?
 }
 
 model OrderItem {
@@ -97,6 +151,22 @@ model OrderItem {
   product   Product @relation(fields: [productId], references: [id])
 }
 
+model Payment {
+  id          Int           @id @default(autoincrement())
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  method      String
+  amount      Int
+  status      PaymentStatus @default(PAID)
+  requestedAt DateTime      @default(now())
+  approvedAt  DateTime?
+  paymentKey  String?       @unique // PG사에서 발급하는 고유 결제 키
+  receiptUrl  String? // 매출전표 URL
+
+  orderId Int   @unique
+  order   Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
 model Review {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
@@ -104,22 +174,45 @@ model Review {
   content   String   @db.Text
   rating    Int      @default(5)
 
-  userId Int
-  user   User @relation(fields: [userId], references: [id])
-
+  userId    Int
+  user      User          @relation(fields: [userId], references: [id])
   productId Int
-  product   Product @relation(fields: [productId], references: [id])
+  product   Product       @relation(fields: [productId], references: [id])
+  images    ReviewImage[]
+}
+
+model ReviewImage {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  url       String
+
+  reviewId Int
+  review   Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
 }
 
 model Inquiry {
-  id         Int      @id @default(autoincrement())
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id         Int           @id @default(autoincrement())
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+  type       InquiryType // 문의 유형
   title      String
-  content    String   @db.Text
-  isAnswered Boolean  @default(false)
-  answer     String?  @db.Text
+  content    String        @db.Text
+  status     InquiryStatus @default(PENDING)
+  isAnswered Boolean       @default(false)
+  answer     String?       @db.Text
 
   userId Int
-  user   User @relation(fields: [userId], references: [id])
+  user   User           @relation(fields: [userId], references: [id])
+  images InquiryImage[]
+}
+
+model InquiryImage {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  url       String
+
+  inquiryId Int
+  inquiry   Inquiry @relation(fields: [inquiryId], references: [id], onDelete: Cascade)
 }

@@ -4,7 +4,7 @@ import { registry } from "../config/openApi";
 
 extendZodWithOpenApi(z);
 
-const TAG = "Categories";
+const OPEN_API_TAG = "Categories";
 
 const CategoryBase = z.object({
     id: z.number().openapi({ example: 1 }),
@@ -27,13 +27,17 @@ export const CategoryIdParamSchema = z.object({
 registry.registerPath({
     method: "get",
     path: "/categories",
-    tags: [TAG],
+    tags: [OPEN_API_TAG],
     summary: "전체 카테고리 목록 조회",
     description: "전체 카테고리를 계층형 트리 구조로 조회합니다.",
     responses: {
         200: {
             description: "조회 성공",
-            content: { "application/json": { schema: z.object({ data: z.array(CategoryTreeResponseSchema) }) } },
+            content: {
+                "application/json": {
+                    schema: z.object({ data: z.array(CategoryTreeResponseSchema) }),
+                },
+            },
         },
     },
 });
@@ -41,7 +45,7 @@ registry.registerPath({
 registry.registerPath({
     method: "get",
     path: "/categories/{id}",
-    tags: [TAG],
+    tags: [OPEN_API_TAG],
     summary: "카테고리 상세 조회",
     description: "특정 카테고리의 정보와 바로 아래 하위 카테고리 목록을 조회합니다.",
     request: {
@@ -50,7 +54,9 @@ registry.registerPath({
     responses: {
         200: {
             description: "조회 성공",
-            content: { "application/json": { schema: z.object({ data: CategoryDetailResponseSchema }) } },
+            content: {
+                "application/json": { schema: z.object({ data: CategoryDetailResponseSchema }) },
+            },
         },
         404: { description: "카테고리 없음" },
     },
