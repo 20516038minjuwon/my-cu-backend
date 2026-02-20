@@ -87,10 +87,11 @@ export class OrderService {
 
     // 2. 결제 승인 (토스 API 연동 + 스마트 장바구니 정리)
     async confirmPayment(userId: number, data: ConfirmPaymentInput) {
-        const orderId = Number(data.orderId);
+        const parts = data.orderId.split("-");
+        const actualOrderId = Number(parts[1]);
 
         const order = await prisma.order.findUnique({
-            where: { id: orderId },
+            where: { id: actualOrderId },
             include: { items: true },
         });
 
